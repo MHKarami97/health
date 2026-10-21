@@ -5,7 +5,7 @@
       "namespace": "android_app",
       "package_name": "mhk.health",
       "sha256_cert_fingerprints": [
-        ""
+        "55:C4:86:5A:61:9D:20:00:C9:53:D0:4F:2F:CB:D9:7C:B7:20:1F:8B:3F:C9:EE:9A:17:67:19:68:F0:F1:14:DE"
       ]
     }
   },
@@ -15,7 +15,7 @@
       "namespace": "cafebazaar_twa",
       "package_name": "mhk.health",
       "sha256_cert_fingerprints": [
-        ""
+        "55:C4:86:5A:61:9D:20:00:C9:53:D0:4F:2F:CB:D9:7C:B7:20:1F:8B:3F:C9:EE:9A:17:67:19:68:F0:F1:14:DE"
       ]
     }
   }
