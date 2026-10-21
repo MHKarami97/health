@@ -5,10 +5,12 @@ import SecurityPanel from '@presentation/components/settings/SecurityPanel.vue'
 import DataPanel from '@presentation/components/settings/DataPanel.vue'
 import PageCard from '@presentation/components/shared/PageCard.vue'
 import DisclaimerBanner from '@presentation/components/shared/DisclaimerBanner.vue'
+import ThemeSwitcher from '@presentation/components/settings/ThemeSwitcher.vue'
 </script>
 
 <template>
   <DisclaimerBanner />
+  <ThemeSwitcher />
   <ProfilePanel />
   <GoalsPanel />
   <SecurityPanel />
