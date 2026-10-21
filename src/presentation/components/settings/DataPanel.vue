@@ -24,13 +24,23 @@ function exportJson(): void {
 
 async function importJson(event: Event): Promise<void> {
   var input = event.target as HTMLInputElement
-  var file = input.files?.[0]
-  if (!file) return
+  const selectedFile = input.files?.[0]
+
+  if (!selectedFile) {
+    input.value = ''
+    return
+  }
+
   if (!confirm('با وارد کردن پشتیبان، همهٔ داده‌های فعلی جایگزین می‌شود. ادامه می‌دهید؟')) {
     input.value = ''
     return
   }
-  await action.run(async () => store.replaceAll(await backup.import(file)), 'پشتیبان بازیابی شد')
+
+  await action.run(async () => {
+    const backupData = await backup.import(selectedFile)
+    store.replaceAll(backupData)
+  }, 'پشتیبان بازیابی شد')
+
   input.value = ''
 }
 

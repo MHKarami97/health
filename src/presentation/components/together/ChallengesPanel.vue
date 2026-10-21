@@ -9,7 +9,6 @@ import { useAction } from '@presentation/composables/useAction'
 
 var store = useAppStore()
 var action = useAction()
-var kinds = Object.keys(CHALLENGE_LABELS) as ChallengeKind[]
 var form = reactive({ title: '', kind: 'custom' as ChallengeKind, startDate: store.todayKey, endDate: DateOnly.parse(store.todayKey).addDays(6).value, targetMinutes: 300 })
 
 var evaluator = computed(() => new ChallengeEvaluator(DateOnly.parse(store.todayKey)))

@@ -33,7 +33,7 @@ async function askPermission(): Promise<void> {
 
 <template>
   <PageCard title="رمز عبور و قفل برنامه">
-    <p class="muted">رمز فقط ورود به برنامه را قفل می‌کند و داده‌های ذخیره‌شده در مرورگر را رمزنگاری نمی‌کند. روی دستگاه مشترک از قفل صفحهٔ خود دستگاه هم استفاده کنید.</p>
+    <p class="muted">رمز فقط ورود به برنامه را قفل می‌کند و داده‌های ذخیره‌شده در سیستم را رمزنگاری نمی‌کند. روی دستگاه مشترک از قفل صفحهٔ خود دستگاه هم استفاده کنید.</p>
     <form class="grid gap-2" @submit.prevent="save">
       <input v-if="lockStore.isEnabled" v-model="current" type="password" placeholder="رمز فعلی" autocomplete="current-password" dir="ltr" />
       <input v-model="next" type="password" placeholder="رمز جدید (حداقل ۶ کاراکتر)" autocomplete="new-password" dir="ltr" />
@@ -49,7 +49,7 @@ async function askPermission(): Promise<void> {
   </PageCard>
 
   <PageCard title="اعلان‌ها">
-    <p class="muted">وضعیت اجازهٔ اعلان: {{ permission === 'granted' ? 'داده شده' : permission === 'denied' ? 'مسدود شده (از تنظیمات مرورگر باز کنید)' : permission === 'unsupported' ? 'پشتیبانی نمی‌شود' : 'هنوز پرسیده نشده' }}</p>
+    <p class="muted">وضعیت اجازهٔ اعلان: {{ permission === 'granted' ? 'داده شده' : permission === 'denied' ? 'مسدود شده (از تنظیمات سیستم باز کنید)' : permission === 'unsupported' ? 'پشتیبانی نمی‌شود' : 'هنوز پرسیده نشده' }}</p>
     <button v-if="permission === 'default'" type="button" class="btn-soft" @click="askPermission">درخواست اجازهٔ اعلان</button>
   </PageCard>
 </template>

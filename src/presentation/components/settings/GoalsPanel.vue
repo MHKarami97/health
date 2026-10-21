@@ -3,7 +3,6 @@ import { reactive, watch } from 'vue'
 import { useAppStore } from '@application/stores/appStore'
 import { DEFAULT_GOALS, type HealthGoals } from '@domain/health/Goals'
 import PageCard from '@presentation/components/shared/PageCard.vue'
-import SourceLink from '@presentation/components/shared/SourceLink.vue'
 import { BrowserNotifier } from '@infrastructure/notifications/BrowserNotifier'
 import { useAction } from '@presentation/composables/useAction'
 
@@ -70,8 +69,7 @@ var toggles = [
       <label class="field">انرژی روزانه (کیلوکالری، برای تبدیل درصد به گرم)
         <input v-model.number="settings.energyTarget" type="number" min="800" max="5000" step="50" inputmode="numeric" />
       </label>
-    </div>
-    <div class="flex flex-wrap gap-x-3 gap-y-1"><SourceLink source="whoHealthyDiet" /><SourceLink source="emroFatSaltSugar" /><SourceLink source="whoPhysicalActivity" /></div>
+    </div>    
     <div class="grid gap-2 sm:grid-cols-2">
       <button type="button" class="btn-primary" @click="save">ذخیره</button>
       <button type="button" class="btn-soft" @click="resetToWho">بازگشت به پیش‌فرض WHO</button>
