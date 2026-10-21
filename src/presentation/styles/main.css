@@ -1,11 +1,35 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-html {
-  font-family: Vazirmatn, "Segoe UI", Tahoma, sans-serif;
+@custom-variant dark (&:where(.dark, .dark *));
+
+html { font-family: Vazirmatn, Tahoma, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; }
+body { @apply bg-slate-100 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100; }
+
+input:not([type="checkbox"]):not([type="range"]), select, textarea {
+  @apply w-full rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-900 outline-none ring-1 ring-transparent focus:ring-teal-500 dark:bg-slate-800 dark:text-slate-100;
 }
 
-body {
-  @apply bg-slate-100 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+@utility btn {
+  @apply rounded-xl px-4 py-2.5 text-sm font-medium transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-teal-500 active:scale-[0.99] disabled:opacity-50;
+}
+@utility btn-soft {
+  @apply rounded-xl bg-slate-200 px-4 py-2.5 text-sm font-medium text-slate-800 transition hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700;
+}
+@utility btn-danger {
+  @apply rounded-xl bg-rose-500/10 px-4 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-500/20 dark:text-rose-300;
+}
+@utility chip-off {
+  @apply rounded-full bg-slate-100 px-3 py-1.5 text-xs text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700;
+}
+@utility chip-on {
+  @apply rounded-full bg-teal-600 px-3 py-1.5 text-xs text-white transition;
+}
+@utility field {
+  @apply flex flex-col gap-1 text-xs text-slate-500 dark:text-slate-400;
+}
+@utility muted {
+  @apply text-xs leading-6 text-slate-500 dark:text-slate-400;
 }

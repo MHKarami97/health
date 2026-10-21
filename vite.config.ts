@@ -1,49 +1,69 @@
-import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { fileURLToPath, URL } from "node:url";
+
+var resolvePath = (path: string): string =>
+  fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
   plugins: [
     vue(),
+    tailwindcss(),
     VitePWA({
-      registerType: "prompt",
-      includeAssets: ["icons/*.png"],
+      registerType: "autoUpdate",
+      includeAssets: ["icon.svg", "icon-192.png", "icon-512.png"],
       manifest: {
-        name: "ردیاب سلامت",
-        short_name: "ردیاب سلامت",
-        description: "با سلامت به راحتی عادت خود را ردیابی کنید",
-        theme_color: "#f8fafc",
-        background_color: "#f8fafc",
+        name: "سلامت",
+        short_name: "سلامت",
+        description: "همراه روزانه سلامت تغذیه، فعالیت، چکاپ و عادت‌ها",
+        lang: "fa",
+        dir: "rtl",
         display: "standalone",
         start_url: "/",
+        theme_color: "#0f766e",
+        background_color: "#f8fafc",
         icons: [
           { src: "icons/icon-48.png", sizes: "48x48", type: "image/png" },
           { src: "icons/icon-72.png", sizes: "72x72", type: "image/png" },
           { src: "icons/icon-96.png", sizes: "96x96", type: "image/png" },
           { src: "icons/icon-144.png", sizes: "144x144", type: "image/png" },
-          { src: "icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
-          { src: "icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "maskable" },
-          { src: "icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
-          { src: "icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+          {
+            src: "icons/icon-192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "icons/icon-192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "maskable",
+          },
+          {
+            src: "icons/icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "icons/icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
+          },
         ],
       },
-      workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,jpg,jpeg,avif,gif,woff,woff2,json,webmanifest}"],
-        navigateFallback: "index.html",
-        cleanupOutdatedCaches: true,
-        clientsClaim: true,
-        skipWaiting: false,
-      },
+      workbox: { navigateFallback: "index.html", cleanupOutdatedCaches: true },
     }),
   ],
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-      "@domain": fileURLToPath(new URL("./src/domain", import.meta.url)),
-      "@application": fileURLToPath(new URL("./src/application", import.meta.url)),
-      "@infrastructure": fileURLToPath(new URL("./src/infrastructure", import.meta.url)),
-      "@presentation": fileURLToPath(new URL("./src/presentation", import.meta.url)),
+      "@domain": resolvePath("./src/domain"),
+      "@application": resolvePath("./src/application"),
+      "@infrastructure": resolvePath("./src/infrastructure"),
+      "@presentation": resolvePath("./src/presentation"),
     },
   },
 });
