@@ -15,7 +15,7 @@ var values = computed(() => {
   <div class="flex flex-col gap-1.5">
     <div class="flex justify-between text-xs text-slate-600 dark:text-slate-300">
       <span>{{ label }}</span>
-      <span class="text-slate-400">{{ lowLabel }}{{ lowLabel && highLabel ? ' ← → ' : '' }}{{ highLabel }}</span>
+      <span class="text-slate-400">→ {{ lowLabel }}  .  {{ highLabel }} ←</span>
     </div>
     <div class="flex gap-2" role="radiogroup" :aria-label="label">
       <button v-for="value in values" :key="value" type="button" role="radio" :aria-checked="value === modelValue" class="size-9" :class="value === modelValue ? 'chip-on' : 'chip-off'" @click="$emit('update:modelValue', value)">{{ value }}</button>
