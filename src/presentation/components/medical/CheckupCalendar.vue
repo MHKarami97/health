@@ -4,7 +4,6 @@ import type { CheckupStatus } from '@domain/health/Checkups'
 import { persianDate } from '@domain/valueObjects/DateOnly'
 import PageCard from '@presentation/components/shared/PageCard.vue'
 import PersianDatePicker from '@presentation/components/shared/PersianDatePicker.vue'
-import type { SOURCES } from '@domain/health/Sources'
 
 var store = useAppStore()
 
@@ -16,9 +15,6 @@ var STATUS: Record<CheckupStatus, { label: string; css: string }> = {
   'not-applicable': { label: 'هنوز لازم نیست', css: 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200' },
 }
 
-function sourceKey(id: string): keyof typeof SOURCES {
-  return id === 'hopkins-screenings' ? 'hopkinsScreenings' : 'clevelandGuidelines'
-}
 </script>
 
 <template>
