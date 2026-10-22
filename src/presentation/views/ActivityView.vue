@@ -6,7 +6,6 @@ import { persianDate } from '@domain/valueObjects/DateOnly'
 import { BrowserNotifier } from '@infrastructure/notifications/BrowserNotifier'
 import PageCard from '@presentation/components/shared/PageCard.vue'
 import ProgressBar from '@presentation/components/shared/ProgressBar.vue'
-import SourceLink from '@presentation/components/shared/SourceLink.vue'
 import DisclaimerBanner from '@presentation/components/shared/DisclaimerBanner.vue'
 import { useAction } from '@presentation/composables/useAction'
 
@@ -63,7 +62,6 @@ async function changeMoveReminder(value: number): Promise<void> {
       پیاده‌روی تند و فعالیت متوسط هر دقیقه یک امتیاز و فعالیت شدید هر دقیقه دو امتیاز دارد (۷۵ دقیقه شدید معادل ۱۵۰ دقیقه متوسط). هفته از شنبه شروع می‌شود.
       پیاده‌روی ثبت‌شده: {{ summary.walkingMinutes }} · متوسط: {{ summary.moderateMinutes }} · شدید: {{ summary.vigorousMinutes }} دقیقه.
     </p>
-    <SourceLink source="whoPhysicalActivity" />
   </PageCard>
 
   <PageCard title="یادآور «بلند شو و حرکت کن»">
@@ -71,7 +69,6 @@ async function changeMoveReminder(value: number): Promise<void> {
     <div class="flex flex-wrap gap-2">
       <button v-for="option in moveOptions" :key="option.value" type="button" :class="store.current.settings.moveReminderMinutes === option.value ? 'chip-on' : 'chip-off'" @click="changeMoveReminder(option.value)">{{ option.label }}</button>
     </div>
-    <SourceLink source="whoSedentary" />
   </PageCard>
 
   <PageCard v-if="store.current.activityLogs.length" title="ثبت‌های اخیر">

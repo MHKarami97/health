@@ -10,7 +10,6 @@ import { ALTERNATIVES, NutritionTargets } from '@domain/health/NutritionTargets'
 import PageCard from '@presentation/components/shared/PageCard.vue'
 import ProgressBar from '@presentation/components/shared/ProgressBar.vue'
 import Counter from '@presentation/components/shared/Counter.vue'
-import SourceLink from '@presentation/components/shared/SourceLink.vue'
 import DisclaimerBanner from '@presentation/components/shared/DisclaimerBanner.vue'
 import { useAction } from '@presentation/composables/useAction'
 
@@ -92,7 +91,6 @@ async function saveCustom(): Promise<void> {
       <Counter label="نوشیدنی شیرین" :value="store.todayDrinks.sweet" tone="amber" @increment="store.addDrink('sweet', 1)" @decrement="store.addDrink('sweet', -1)" />
     </div>
     <p class="muted">این هفته: {{ store.weekSweetDrinks }} نوشیدنی شیرین (سهم هفتگی شما {{ goals.weeklySweetDrinks }}). نوشیدنی‌های شیرین جزو منابع قند آزاد هستند.</p>
-    <SourceLink source="emroFatSaltSugar" />
   </PageCard>
 
   <PageCard title="سهم هفتگی من">
@@ -110,7 +108,6 @@ async function saveCustom(): Promise<void> {
       <li v-for="cap in targets.caps()" :key="cap.key" class="rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60">
         <p class="text-sm font-medium">{{ cap.label }}: {{ cap.value }}</p>
         <p v-if="cap.hint" class="muted">{{ cap.hint }}</p>
-        <SourceLink :source="cap.sourceKey" />
       </li>
     </ul>
     <p v-if="store.current.settings.trackCalories" class="text-sm">کالری ثبت‌شدهٔ امروز: {{ store.todayCalories }} از {{ store.current.settings.energyTarget }}</p>
@@ -122,7 +119,6 @@ async function saveCustom(): Promise<void> {
       <li v-for="item in ALTERNATIVES" :key="item">{{ item }}</li>
     </ul>
     <p class="muted">به گفتهٔ WHO چربی ترانس بیشتر در غذاهای فرآوری‌شده، فست‌فود، تنقلات، سرخ‌شده‌ها، پیتزای فریز، پای، کلوچه و مارگارین دیده می‌شود. برچسب‌های «فرآوری‌شده»، «سرخ‌شده»، «نمک زیاد» و «قند زیاد» برای شمارش دفعات هفتگی همین‌جا هستند.</p>
-    <SourceLink source="emroFatSaltSugar" />
   </PageCard>
 
   <PageCard v-if="store.current.nutritionLogs.length" title="ثبت‌های اخیر">

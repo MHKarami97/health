@@ -4,7 +4,6 @@ import type { CheckupStatus } from '@domain/health/Checkups'
 import { persianDate } from '@domain/valueObjects/DateOnly'
 import PageCard from '@presentation/components/shared/PageCard.vue'
 import PersianDatePicker from '@presentation/components/shared/PersianDatePicker.vue'
-import SourceLink from '@presentation/components/shared/SourceLink.vue'
 import type { SOURCES } from '@domain/health/Sources'
 
 var store = useAppStore()
@@ -46,7 +45,6 @@ function sourceKey(id: string): keyof typeof SOURCES {
         </div>
         <div class="flex items-center justify-between gap-2">
           <button type="button" class="chip-off" @click="store.markCheckupDone(item.definition.id)">امروز انجام شد</button>
-          <SourceLink :source="sourceKey(item.definition.source.id)" />
         </div>
         <p v-if="!item.definition.sourceBacked" class="muted">بازهٔ پیش‌فرض این مورد از منبع بالا استخراج نشده و فقط یک مقدار شروع است.</p>
       </li>

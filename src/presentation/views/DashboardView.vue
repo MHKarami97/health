@@ -9,7 +9,6 @@ import PageCard from '@presentation/components/shared/PageCard.vue'
 import ProgressBar from '@presentation/components/shared/ProgressBar.vue'
 import Counter from '@presentation/components/shared/Counter.vue'
 import DisclaimerBanner from '@presentation/components/shared/DisclaimerBanner.vue'
-import SourceLink from '@presentation/components/shared/SourceLink.vue'
 
 var store = useAppStore()
 var goals = computed(() => store.current.goals)
@@ -45,7 +44,6 @@ function streak(habitId: string): number {
   <PageCard title="فعالیت این هفته">
     <ProgressBar :percent="aerobicPercent" label="فعالیت هوازی" :detail="`${store.activitySummary.aerobicEquivalent} از ${goals.weeklyAerobicMinutes} دقیقه`" />
     <ProgressBar :percent="strengthPercent" label="تمرین قدرتی" :detail="`${store.activitySummary.strengthDays} از ${goals.strengthDays} روز`" />
-    <SourceLink source="whoPhysicalActivity" />
   </PageCard>
 
   <PageCard v-if="store.visibleHabits.length" title="عادت‌های امروز">
