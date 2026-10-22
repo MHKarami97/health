@@ -3,6 +3,7 @@ import { useAppStore } from '@application/stores/appStore'
 import type { CheckupStatus } from '@domain/health/Checkups'
 import { persianDate } from '@domain/valueObjects/DateOnly'
 import PageCard from '@presentation/components/shared/PageCard.vue'
+import PersianDatePicker from '@presentation/components/shared/PersianDatePicker.vue'
 import SourceLink from '@presentation/components/shared/SourceLink.vue'
 import type { SOURCES } from '@domain/health/Sources'
 
@@ -34,10 +35,10 @@ function sourceKey(id: string): keyof typeof SOURCES {
         <p v-if="item.note" class="muted">{{ item.note }}</p>
         <p v-if="item.record.lastDate" class="text-xs">آخرین انجام: {{ persianDate(item.record.lastDate) }}<span v-if="item.nextDate"> · نوبت بعدی: {{ item.nextDate.toPersian() }}</span></p>
         <div class="grid grid-cols-2 items-end gap-2">
-          <label class="field">
+          <div class="field">
             تاریخ آخرین انجام
-            <input type="date" :value="item.record.lastDate ?? ''" @change="store.markCheckupDone(item.definition.id, ($event.target as HTMLInputElement).value)" />
-          </label>
+            <PersianDatePicker :model-value="item.record.lastDate ?? ''" label="تاریخ آخرین انجام" @update:model-value="store.markCheckupDone(item.definition.id, $event)" />
+          </div>
           <label class="field">
             بازه (ماه)
             <input type="number" min="1" max="120" :value="item.record.intervalMonths" @change="store.setCheckupInterval(item.definition.id, Number(($event.target as HTMLInputElement).value))" />

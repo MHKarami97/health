@@ -4,6 +4,7 @@ import { useAppStore } from '@application/stores/appStore'
 import { APPOINTMENT_LABELS, type AppointmentKind } from '@domain/health/Medical'
 import { persianDate } from '@domain/valueObjects/DateOnly'
 import PageCard from '@presentation/components/shared/PageCard.vue'
+import PersianDatePicker from '@presentation/components/shared/PersianDatePicker.vue'
 import { useAction } from '@presentation/composables/useAction'
 
 var store = useAppStore()
@@ -34,7 +35,7 @@ async function addVaccine(): Promise<void> {
     <form class="grid gap-2 sm:grid-cols-4" @submit.prevent="addAppointment">
       <input v-model="appointment.title" placeholder="عنوان" class="sm:col-span-2" />
       <select v-model="appointment.kind" aria-label="نوع نوبت"><option v-for="kind in kinds" :key="kind" :value="kind">{{ APPOINTMENT_LABELS[kind] }}</option></select>
-      <input v-model="appointment.date" type="date" aria-label="تاریخ" />
+      <PersianDatePicker v-model="appointment.date" label="تاریخ نوبت" :clearable="false" />
       <input v-model="appointment.time" type="time" aria-label="ساعت" />
       <button type="submit" class="btn-primary sm:col-span-3">افزودن نوبت</button>
     </form>
@@ -50,8 +51,8 @@ async function addVaccine(): Promise<void> {
     </ul>
     <form class="grid gap-2 sm:grid-cols-3" @submit.prevent="addVaccine">
       <input v-model="vaccine.name" placeholder="نام واکسن" class="sm:col-span-3" />
-      <label class="field">تاریخ آخرین دوز<input v-model="vaccine.lastDate" type="date" /></label>
-      <label class="field">تاریخ نوبت بعدی<input v-model="vaccine.nextDate" type="date" /></label>
+      <div class="field">تاریخ آخرین دوز<PersianDatePicker v-model="vaccine.lastDate" label="تاریخ آخرین دوز" /></div>
+      <div class="field">تاریخ نوبت بعدی<PersianDatePicker v-model="vaccine.nextDate" label="تاریخ نوبت بعدی" /></div>
       <button type="submit" class="btn-primary self-end">افزودن</button>
     </form>
   </PageCard>
