@@ -6,6 +6,7 @@ import { DateOnly, persianDate } from '@domain/valueObjects/DateOnly'
 import PageCard from '@presentation/components/shared/PageCard.vue'
 import ProgressBar from '@presentation/components/shared/ProgressBar.vue'
 import { useAction } from '@presentation/composables/useAction'
+import PersianDatePicker from '@presentation/components/shared/PersianDatePicker.vue'
 
 var store = useAppStore()
 var action = useAction()
@@ -59,8 +60,8 @@ function doneToday(id: string): boolean {
     </div>
     <form class="grid gap-2 sm:grid-cols-2" @submit.prevent="create">
       <input v-model="form.title" placeholder="عنوان چالش" class="sm:col-span-2" maxlength="60" />
-      <label class="field">شروع<input v-model="form.startDate" type="date" /></label>
-      <label class="field">پایان<input v-model="form.endDate" type="date" /></label>
+      <label class="field">شروع<PersianDatePicker v-model="form.startDate" label="تاریخ شروع" :clearable="false" /></label>
+      <label class="field">پایان<PersianDatePicker v-model="form.endDate" label="تاریخ پایان" :clearable="false" /></label>
       <label v-if="form.kind === 'walking-duo'" class="field sm:col-span-2">هدف جمع پیاده‌روی (دقیقه)<input v-model.number="form.targetMinutes" type="number" min="1" /></label>
       <button type="submit" class="btn-primary sm:col-span-2">ساخت چالش</button>
     </form>
