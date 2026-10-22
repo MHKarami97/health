@@ -27,6 +27,7 @@ var emit = defineEmits<{
 
 var YEARS = Array.from({ length: JalaliCalendar.maxYear - JalaliCalendar.minYear + 1 }, (_, index) => JalaliCalendar.minYear + index)
 var MONTHS = JalaliCalendar.monthNames.map((name, index) => ({ value: index + 1, name }))
+var SELECT_CLASS = 'h-9 w-full rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
 
 var isOpen = ref(false)
 var viewYear = ref<number>(JalaliCalendar.minYear)
@@ -37,6 +38,7 @@ var panel = ref<HTMLElement | null>(null)
 
 var selected = computed(() => JalaliCalendar.fromIso(props.modelValue))
 var triggerText = computed(() => (selected.value ? JalaliCalendar.format(selected.value) : props.placeholder))
+var monthTitle = computed(() => `${JalaliCalendar.monthNames[viewMonth.value - 1]} ${JalaliCalendar.digits(viewYear.value)}`)
 
 var cells = computed<(DayCell | null)[]>(() => {
   if (!isOpen.value) return []
@@ -96,9 +98,9 @@ function dayClass(cell: DayCell): string[] {
     'size-10 rounded-full text-sm transition-colors',
     cell.isSelected
       ? 'bg-teal-600 font-semibold text-white'
-      : 'hover:bg-slate-100 dark:hover:bg-slate-800',
+      : 'text-slate-900 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800',
     cell.isToday && !cell.isSelected ? 'ring-1 ring-teal-500' : '',
-    cell.isFriday && !cell.isSelected ? 'text-rose-500' : '',
+    cell.isFriday && !cell.isSelected ? '!text-rose-500' : '',
   ]
 }
 </script>
@@ -109,7 +111,7 @@ function dayClass(cell: DayCell): string[] {
       ref="trigger"
       type="button"
       class="flex w-full items-center justify-between gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-start text-sm dark:border-slate-700 dark:bg-slate-900"
-      :class="selected ? '' : 'text-slate-400'"
+      :class="selected ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'"
       :aria-label="`${label}: ${triggerText}`"
       aria-haspopup="dialog"
       :aria-expanded="isOpen"
@@ -132,24 +134,26 @@ function dayClass(cell: DayCell): string[] {
           :aria-label="label"
           tabindex="-1"
           dir="rtl"
-          class="w-full max-w-sm rounded-t-2xl bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl outline-none dark:bg-slate-900 sm:rounded-2xl sm:pb-4"
+          class="w-full max-w-sm rounded-t-2xl bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-slate-900 shadow-xl outline-none dark:bg-slate-900 dark:text-slate-100 dark:[color-scheme:dark] sm:rounded-2xl sm:pb-4"
           @keydown.esc.stop="close"
         >
           <div class="mb-3 flex items-center justify-between gap-2">
             <button type="button" class="btn-soft !px-3" aria-label="ماه قبل" @click="shiftMonth(-1)">
               <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
             </button>
-            <div class="flex flex-1 gap-2">
-              <select v-model.number="viewMonth" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-900" aria-label="ماه">
-                <option v-for="month in MONTHS" :key="month.value" :value="month.value">{{ month.name }}</option>
-              </select>
-              <select v-model.number="viewYear" class="w-24 rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-900" aria-label="سال">
-                <option v-for="year in YEARS" :key="year" :value="year">{{ JalaliCalendar.digits(year) }}</option>
-              </select>
-            </div>
+            <p class="text-base font-semibold" aria-live="polite">{{ monthTitle }}</p>
             <button type="button" class="btn-soft !px-3" aria-label="ماه بعد" @click="shiftMonth(1)">
               <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
             </button>
+          </div>
+
+          <div class="mb-3 grid grid-cols-[1fr_6rem] gap-2">
+            <select v-model.number="viewMonth" :class="SELECT_CLASS" aria-label="ماه">
+              <option v-for="month in MONTHS" :key="month.value" :value="month.value">{{ month.name }}</option>
+            </select>
+            <select v-model.number="viewYear" :class="SELECT_CLASS" aria-label="سال">
+              <option v-for="year in YEARS" :key="year" :value="year">{{ JalaliCalendar.digits(year) }}</option>
+            </select>
           </div>
 
           <div class="grid grid-cols-7 text-center text-xs text-slate-500 dark:text-slate-400" aria-hidden="true">

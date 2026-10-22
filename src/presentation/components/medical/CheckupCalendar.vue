@@ -39,7 +39,7 @@ function sourceKey(id: string): keyof typeof SOURCES {
             <PersianDatePicker :model-value="item.record.lastDate ?? ''" label="تاریخ آخرین انجام" @update:model-value="store.markCheckupDone(item.definition.id, $event)" />
           </div>
           <label class="field">
-            بازه (ماه)
+            بازه (ماه شمسی)
             <input type="number" min="1" max="120" :value="item.record.intervalMonths" @change="store.setCheckupInterval(item.definition.id, Number(($event.target as HTMLInputElement).value))" />
           </label>
         </div>

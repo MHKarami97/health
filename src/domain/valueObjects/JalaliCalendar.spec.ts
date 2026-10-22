@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { DateOnly } from './DateOnly'
 import { JalaliCalendar } from './JalaliCalendar'
 
 var persian = new Intl.DateTimeFormat('en-u-ca-persian-nu-latn', { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' })
@@ -32,5 +33,18 @@ describe('JalaliCalendar', () => {
   it('rejects empty and impossible dates', () => {
     expect(JalaliCalendar.fromIso('')).toBeNull()
     expect(JalaliCalendar.fromIso('2026-02-30')).toBeNull()
+  })
+
+  it('adds Jalali months and clamps the day', () => {
+    expect(JalaliCalendar.addMonths({ year: 1403, month: 12, day: 30 }, 12)).toEqual({ year: 1404, month: 12, day: 29 })
+    expect(JalaliCalendar.addMonths({ year: 1405, month: 1, day: 1 }, -1)).toEqual({ year: 1404, month: 12, day: 1 })
+  })
+})
+
+describe('DateOnly.addMonths', () => {
+  it('uses Persian months', () => {
+    expect(DateOnly.parse('2026-10-22').addMonths(6).value).toBe('2027-04-19')
+    expect(DateOnly.parse('2025-03-20').addMonths(12).value).toBe('2026-03-20')
+    expect(DateOnly.parse('2026-03-21').addMonths(12).value).toBe('2027-03-21')
   })
 })

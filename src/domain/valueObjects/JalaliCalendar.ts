@@ -1,4 +1,8 @@
-import { DateOnly } from './DateOnly'
+interface YearInfo {
+  leap: number
+  gregorianYear: number
+  march: number
+}
 
 export interface JalaliDate {
   readonly year: number
@@ -6,13 +10,8 @@ export interface JalaliDate {
   readonly day: number
 }
 
-interface YearInfo {
-  leap: number
-  gregorianYear: number
-  march: number
-}
-
 var BREAKS = [-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210, 1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178]
+var ISO_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
 var PERSIAN_DIGITS = new Intl.NumberFormat('fa-IR', { useGrouping: false })
 
 var div = (a: number, b: number): number => Math.trunc(a / b)
@@ -32,9 +31,11 @@ export class JalaliCalendar {
 
   /** Accepts the ISO yyyy-MM-dd string used by DateOnly. Returns null for empty or impossible dates. */
   static fromIso(iso: string | null | undefined): JalaliDate | null {
-    var date = DateOnly.tryParse(iso)
-    if (!date) return null
-    var [year, month, day] = date.value.split('-').map(Number)
+    var match = ISO_PATTERN.exec(iso ?? '')
+    if (!match) return null
+    var year = Number(match[1])
+    var month = Number(match[2])
+    var day = Number(match[3])
     var probe = new Date(Date.UTC(year, month - 1, day))
     var isReal = probe.getUTCFullYear() === year && probe.getUTCMonth() === month - 1 && probe.getUTCDate() === day
     return isReal ? JalaliCalendar.fromGregorian(year, month, day) : null
@@ -42,7 +43,16 @@ export class JalaliCalendar {
 
   static toIso(date: JalaliDate): string {
     var gregorian = JalaliCalendar.toGregorian(date.year, date.month, date.day)
-    return DateOnly.fromDate(new Date(gregorian.year, gregorian.month - 1, gregorian.day)).value
+    var pad = (value: number): string => String(value).padStart(2, '0')
+    return `${String(gregorian.year).padStart(4, '0')}-${pad(gregorian.month)}-${pad(gregorian.day)}`
+  }
+
+  /** Moves by Jalali months and clamps the day to the target month length (e.g. 30 Esfand + 12 months in a non-leap year -> 29 Esfand). */
+  static addMonths(date: JalaliDate, months: number): JalaliDate {
+    var index = date.year * 12 + (date.month - 1) + months
+    var year = Math.floor(index / 12)
+    var month = index - year * 12 + 1
+    return { year, month, day: Math.min(date.day, JalaliCalendar.daysInMonth(year, month)) }
   }
 
   static fromGregorian(year: number, month: number, day: number): JalaliDate {

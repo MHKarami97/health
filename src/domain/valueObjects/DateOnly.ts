@@ -1,3 +1,9 @@
+import { JalaliCalendar } from './JalaliCalendar'
+
+var DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
+var MS_PER_DAY = 86_400_000
+var PERSIAN_FORMAT = new Intl.DateTimeFormat('fa-IR-u-ca-persian', { dateStyle: 'medium' })
+
 export class DateOnly {
   private constructor(readonly value: string) {}
 
@@ -12,7 +18,7 @@ export class DateOnly {
   }
 
   static parse(value: string): DateOnly {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error('فرمت تاریخ نامعتبر است')
+    if (!DATE_PATTERN.test(value)) throw new Error('تاریخ نامعتبر است')
     return new DateOnly(value)
   }
 
@@ -36,10 +42,11 @@ export class DateOnly {
     return DateOnly.fromDate(date)
   }
 
+  /** Adds Jalali (Persian calendar) months; the day is clamped to the target month length. */
   addMonths(months: number): DateOnly {
     var date = this.toDate()
-    date.setMonth(date.getMonth() + months)
-    return DateOnly.fromDate(date)
+    var jalali = JalaliCalendar.fromGregorian(date.getFullYear(), date.getMonth() + 1, date.getDate())
+    return DateOnly.parse(JalaliCalendar.toIso(JalaliCalendar.addMonths(jalali, months)))
   }
 
   /** Iranian week starts on Saturday. */
@@ -48,7 +55,7 @@ export class DateOnly {
   }
 
   diffInDays(other: DateOnly): number {
-    return Math.round((this.toDate().getTime() - other.toDate().getTime()) / 86_400_000)
+    return Math.round((this.toDate().getTime() - other.toDate().getTime()) / MS_PER_DAY)
   }
 
   isBetween(start: DateOnly, end: DateOnly): boolean {
@@ -56,7 +63,7 @@ export class DateOnly {
   }
 
   toPersian(): string {
-    return new Intl.DateTimeFormat('fa-IR-u-ca-persian', { dateStyle: 'medium' }).format(this.toDate())
+    return PERSIAN_FORMAT.format(this.toDate())
   }
 
   toString(): string {
