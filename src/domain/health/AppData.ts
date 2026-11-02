@@ -100,3 +100,102 @@ export var normalizeAppData = (raw: Partial<AppData> | null | undefined): AppDat
   var activeId = raw.activeProfileId && profiles[raw.activeProfileId] ? raw.activeProfileId : Object.keys(profiles)[0]
   return { version: 1, activeProfileId: activeId, profiles, shared: { ...createEmptyShared(), ...raw.shared } }
 }
+
+export var mergeAppData = (current: AppData, incoming: AppData): AppData => {
+  var base = normalizeAppData(current)
+  var inc = normalizeAppData(incoming)
+
+  var mergedProfiles: Record<string, ProfileData> = { ...base.profiles }
+
+  var mergeById = <T extends { id: string }>(curList: T[], incList: T[]): T[] => {
+    var map = new Map<string, T>()
+    curList.forEach((item) => map.set(item.id, item))
+    incList.forEach((item) => map.set(item.id, item))
+    return Array.from(map.values())
+  }
+
+  Object.entries(inc.profiles).forEach(([id, incProfileData]) => {
+    if (!mergedProfiles[id]) {
+      mergedProfiles[id] = incProfileData
+      return
+    }
+
+    var cur = mergedProfiles[id]
+
+    var drinkMap = new Map<string, { date: string; water: number; sweet: number }>()
+    cur.drinkLogs.forEach((item) => drinkMap.set(item.date, { ...item }))
+    incProfileData.drinkLogs.forEach((item) => {
+      var existing = drinkMap.get(item.date)
+      if (existing) {
+        drinkMap.set(item.date, {
+          date: item.date,
+          water: Math.max(existing.water, item.water),
+          sweet: Math.max(existing.sweet, item.sweet),
+        })
+      } else {
+        drinkMap.set(item.date, { ...item })
+      }
+    })
+
+    var mergedCheckups = { ...cur.checkups }
+    Object.entries(incProfileData.checkups).forEach(([checkupKey, checkupRec]) => {
+      var k = checkupKey as CheckupId
+      if (!mergedCheckups[k]) {
+        mergedCheckups[k] = checkupRec
+      } else if (checkupRec.lastDate) {
+        if (!mergedCheckups[k].lastDate || checkupRec.lastDate > (mergedCheckups[k].lastDate || '')) {
+          mergedCheckups[k] = checkupRec
+        }
+      }
+    })
+
+    var checkInMap = new Map<string, DailyCheckIn>()
+    cur.checkIns.forEach((item) => checkInMap.set(item.date, { ...item }))
+    incProfileData.checkIns.forEach((item) => {
+      var existing = checkInMap.get(item.date)
+      if (existing) {
+        checkInMap.set(item.date, { ...existing, ...item })
+      } else {
+        checkInMap.set(item.date, { ...item })
+      }
+    })
+
+    mergedProfiles[id] = {
+      profile: { ...cur.profile, ...incProfileData.profile },
+      settings: { ...cur.settings, ...incProfileData.settings },
+      goals: { ...cur.goals, ...incProfileData.goals },
+      healthFile: {
+        ...cur.healthFile,
+        ...incProfileData.healthFile,
+        doctors: mergeById(cur.healthFile.doctors || [], incProfileData.healthFile.doctors || []),
+      },
+      nutritionLogs: mergeById(cur.nutritionLogs, incProfileData.nutritionLogs),
+      drinkLogs: Array.from(drinkMap.values()),
+      activityLogs: mergeById(cur.activityLogs, incProfileData.activityLogs),
+      measurements: mergeById(cur.measurements, incProfileData.measurements),
+      medications: mergeById(cur.medications, incProfileData.medications),
+      appointments: mergeById(cur.appointments, incProfileData.appointments),
+      vaccines: mergeById(cur.vaccines, incProfileData.vaccines),
+      checkups: mergedCheckups,
+      checkIns: Array.from(checkInMap.values()),
+    }
+  })
+
+  var mergedShared = {
+    ...base.shared,
+    ...inc.shared,
+    mealPlan: { ...base.shared.mealPlan, ...inc.shared.mealPlan },
+    shopping: mergeById(base.shared.shopping || [], inc.shared.shopping || []),
+    challenges: mergeById(base.shared.challenges || [], inc.shared.challenges || []),
+    habits: mergeById(base.shared.habits || [], inc.shared.habits || []),
+    sleepGoal: inc.shared.sleepGoal || base.shared.sleepGoal,
+  }
+
+  return {
+    version: 1,
+    activeProfileId: base.activeProfileId,
+    profiles: mergedProfiles,
+    shared: mergedShared,
+  }
+}
+

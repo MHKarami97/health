@@ -15,10 +15,20 @@ import { CheckupPlanner, type CheckupId } from '@domain/health/Checkups'
 import type { DailyCheckIn, Habit, HabitScope } from '@domain/health/Habit'
 import type { Challenge, ChallengeKind, ProfileActivityFacts } from '@domain/health/Challenge'
 import { LocalStorageRepository } from '@infrastructure/storage/LocalStorageRepository'
+import { JsonBackupService } from '@infrastructure/export/JsonBackupService'
 import { newId } from '@infrastructure/ids'
 
 var STORAGE_KEY = 'salamat-data-v1'
 var SAVE_DELAY_MS = 300
+
+var mutationListeners: Array<() => void> = []
+
+export function onAppMutation(callback: () => void): () => void {
+  mutationListeners.push(callback)
+  return () => {
+    mutationListeners = mutationListeners.filter((fn) => fn !== callback)
+  }
+}
 
 export var useAppStore = defineStore('app', () => {
   var repository = new LocalStorageRepository()
@@ -35,9 +45,17 @@ export var useAppStore = defineStore('app', () => {
   watch(data, () => {
     if (saveTimer) clearTimeout(saveTimer)
     saveTimer = setTimeout(flush, SAVE_DELAY_MS)
+    mutationListeners.forEach((fn) => {
+      try {
+        fn()
+      } catch {
+        // Safe execution
+      }
+    })
   }, { deep: true })
 
   if (typeof window !== 'undefined') window.addEventListener('pagehide', flush)
+
 
   // ---------- derived ----------
   var current = computed<ProfileData>(() => data.value.profiles[data.value.activeProfileId])
@@ -300,6 +318,8 @@ export var useAppStore = defineStore('app', () => {
     data.value = createDefaultAppData()
     flush()
   }
+
+  JsonBackupService.registerStore({ data, flush, replaceAll })
 
   return {
     data, todayKey, current, profiles, shared, weekStart, weekNutrition, weekActivity, todayDrinks, tagCounts,
